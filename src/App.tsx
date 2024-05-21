@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, CssBaseline, ThemeProvider } from '@mui/material';
 import ChatSidebar from './ChatSidebar';
 import ChatWindow from './ChatWindow';
+import Header from './Header';
 import theme from './theme';
 
 interface Message {
@@ -19,6 +20,7 @@ interface Chat {
 const App: React.FC = () => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<number | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
 
   useEffect(() => {
     const storedChats = localStorage.getItem('chats');
@@ -72,15 +74,28 @@ const App: React.FC = () => {
     }
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   const selectedChat = chats.find(chat => chat.id === selectedChatId) || null;
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ display: 'flex', height: '100vh', position: 'relative' }}>
-        <ChatSidebar chats={chats} onSelectChat={handleSelectChat} onNewChat={handleNewChat} onDeleteChat={handleDeleteChat} />
-        <Box sx={{ flex: 1 }}>
-          <ChatWindow chat={selectedChat} onSendMessage={handleSendMessage} />
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+        <Header toggleSidebar={toggleSidebar} />
+        <Box sx={{ display: 'flex', flex: 1 }}>
+          <ChatSidebar 
+            chats={chats} 
+            onSelectChat={handleSelectChat} 
+            onNewChat={handleNewChat} 
+            onDeleteChat={handleDeleteChat} 
+            isOpen={isSidebarOpen} 
+          />
+          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)' }}>
+            <ChatWindow chat={selectedChat} onSendMessage={handleSendMessage} />
+          </Box>
         </Box>
       </Box>
     </ThemeProvider>

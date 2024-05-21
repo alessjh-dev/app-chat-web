@@ -1,28 +1,22 @@
-import React, { useState } from 'react';
-import { Box, List, ListItem, ListItemText, Button, Typography, Divider, IconButton } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
+import React from 'react';
+import { Box, List, ListItem, ListItemText, Button, Typography, Divider, IconButton, Tooltip, Badge } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 
 interface ChatSidebarProps {
   chats: { id: number; title: string; lastMessage: string }[];
   onSelectChat: (id: number) => void;
   onNewChat: () => void;
   onDeleteChat: (id: number) => void;
+  isOpen: boolean;
 }
 
-const ChatSidebar: React.FC<ChatSidebarProps> = ({ chats, onSelectChat, onNewChat, onDeleteChat }) => {
-  const [isOpen, setIsOpen] = useState(true);
-
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
-
+const ChatSidebar: React.FC<ChatSidebarProps> = ({ chats, onSelectChat, onNewChat, onDeleteChat, isOpen }) => {
   return (
     <Box
       sx={{
         width: isOpen ? '250px' : { xs: '0', md: '60px' },
-        height: '100vh',
+        height: '100%',
         backgroundColor: '#2c2c2c',
         color: '#fff',
         transition: 'width 0.3s',
@@ -34,25 +28,20 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ chats, onSelectChat, onNewCha
         overflow: 'hidden',
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', padding: '10px' }}>
-        <IconButton onClick={toggleSidebar} sx={{ color: '#fff' }}>
-          {isOpen ? <CloseIcon /> : <MenuIcon />}
-        </IconButton>
-        {isOpen && (
-          <Typography variant="h6" sx={{ marginLeft: '10px' }}>
-            Chats
-          </Typography>
-        )}
-      </Box>
-      {isOpen && (
+      {isOpen ? (
         <>
+          <Box sx={{ padding: '10px' }}>
+            <Typography variant="h6">
+              Chats
+            </Typography>
+          </Box>
           <Divider sx={{ borderColor: '#424242' }} />
           <Button variant="contained" sx={{ backgroundColor: '#4caf50', color: '#fff' }} onClick={onNewChat} fullWidth>
             Nuevo Chat
           </Button>
           <Divider sx={{ borderColor: '#424242' }} />
           <List sx={{ width: '100%' }}>
-            {[...chats].reverse().map((chat) => (  // Reverse the order of chats
+            {[...chats].reverse().map((chat) => (
               <ListItem key={chat.id} sx={{ color: '#fff' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                   <ListItemText 
@@ -71,6 +60,19 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ chats, onSelectChat, onNewCha
               </ListItem>
             ))}
           </List>
+        </>
+      ) : (
+        <>
+          <Tooltip title="Nuevo Chat">
+            <IconButton onClick={onNewChat} sx={{ backgroundColor: '#4caf50', color: '#fff', margin: '10px' }}>
+              <AddIcon />
+            </IconButton>
+          </Tooltip>
+          <Box sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+            <Badge badgeContent={chats.length} color="error" sx={{ '& .MuiBadge-badge': { fontSize: '1.2rem', height: '30px', minWidth: '30px' } }}>
+              <Typography variant="body2" sx={{ visibility: 'hidden' }}>Chats</Typography>
+            </Badge>
+          </Box>
         </>
       )}
     </Box>
