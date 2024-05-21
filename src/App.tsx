@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, CssBaseline, ThemeProvider, useMediaQuery, IconButton, Typography, Drawer } from '@mui/material';
+import { Box, CssBaseline, ThemeProvider, useMediaQuery, AppBar, Toolbar, IconButton, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChatSidebar from './ChatSidebar';
 import ChatWindow from './ChatWindow';
@@ -21,7 +21,6 @@ const App: React.FC = () => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<number | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
-  const [isHeaderOpen, setIsHeaderOpen] = useState<boolean>(true);
   const isMobile = useMediaQuery('(max-width:600px)');
 
   useEffect(() => {
@@ -83,42 +82,24 @@ const App: React.FC = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const toggleHeader = () => {
-    setIsHeaderOpen(!isHeaderOpen);
-  };
-
   const selectedChat = chats.find(chat => chat.id === selectedChatId) || null;
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
-        <Drawer
-          anchor="top"
-          open={isHeaderOpen}
-          onClose={toggleHeader}
-          sx={{
-            '& .MuiDrawer-paper': {
-              height: '64px',
-              display: 'flex',
-              alignItems: 'center',
-              padding: '0 16px',
-              backgroundColor: '#2c2c2c',
-              color: '#fff',
-              zIndex: (theme) => theme.zIndex.drawer + 1,
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-            },
-          }}
-        >
-          <IconButton edge="start" color="inherit" onClick={toggleSidebar} aria-label="menu">
-            <MenuIcon />
-          </IconButton>
-          <Box sx={{ flexGrow: 1 }} />
-          <Typography variant="h6">
-            GeminX
-          </Typography>
-        </Drawer>
-        <Box sx={{ display: 'flex', flex: 1, marginTop: '64px' }}>
+        <AppBar position="static" sx={{ backgroundColor: '#2c2c2c' }}>
+          <Toolbar>
+            <IconButton edge="start" color="inherit" onClick={toggleSidebar} aria-label="menu">
+              <MenuIcon />
+            </IconButton>
+            <Box sx={{ flexGrow: 1 }} />
+            <Typography variant="h6">
+              GeminX
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <Box sx={{ display: 'flex', flex: 1 }}>
           <ChatSidebar 
             chats={chats} 
             onSelectChat={handleSelectChat} 
