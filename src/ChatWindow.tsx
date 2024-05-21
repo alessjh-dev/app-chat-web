@@ -18,7 +18,7 @@ const ChatWindow: React.FC = () => {
       setMessages(prevMessages => [...prevMessages, newMessage]);
 
       try {
-        const response = await axios.post('http://localhost:5000/chat', { message: input });
+        const response = await axios.post('https://python-hello-world-beta-topaz.vercel.app/chat', { message: input });
         const botMessage: Message = { text: response.data.message, user: 'bot' };
         setMessages(prevMessages => [...prevMessages, botMessage]);
       } catch (error) {
