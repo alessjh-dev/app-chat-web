@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, KeyboardEvent } from 'react';
+import React, { useState, ChangeEvent, KeyboardEvent, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Box, TextField, Button, List, ListItem, Paper } from '@mui/material';
 import MessageContent from './MessageContent';
@@ -8,19 +8,30 @@ interface Message {
   user: 'me' | 'bot';
 }
 
-const ChatWindow: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+interface ChatWindowProps {
+  chat: { id: number; title: string; messages: Message[] } | null;
+  onSendMessage: (message: Message) => void;
+}
+
+const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage }) => {
   const [input, setInput] = useState<string>('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [chat?.messages]);
 
   const handleSend = async () => {
-    if (input.trim()) {
+    if (input.trim() && chat) {
       const newMessage: Message = { text: input, user: 'me' };
-      setMessages(prevMessages => [...prevMessages, newMessage]);
+      onSendMessage(newMessage);
 
       try {
         const response = await axios.post('https://python-hello-world-beta-topaz.vercel.app/chat', { message: input });
         const botMessage: Message = { text: response.data.message, user: 'bot' };
-        setMessages(prevMessages => [...prevMessages, botMessage]);
+        onSendMessage(botMessage);
       } catch (error) {
         console.error('Error sending message:', error);
       }
@@ -40,10 +51,10 @@ const ChatWindow: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <Box sx={{ flex: 1, overflowY: 'auto', padding: '10px', backgroundColor: '#121212', color: '#fff' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#121212', color: '#fff' }}>
+      <Box sx={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column-reverse', padding: '10px' }}>
         <List>
-          {messages.map((message, index) => (
+          {chat?.messages.map((message, index) => (
             <ListItem key={index} sx={{ justifyContent: message.user === 'me' ? 'flex-end' : 'flex-start' }}>
               <Paper 
                 sx={{
@@ -58,6 +69,7 @@ const ChatWindow: React.FC = () => {
               </Paper>
             </ListItem>
           ))}
+          <div ref={messagesEndRef} />
         </List>
       </Box>
       <Box sx={{ display: 'flex', padding: '10px', borderTop: '1px solid #ccc', backgroundColor: '#1d1d1d' }}>

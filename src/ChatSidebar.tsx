@@ -1,30 +1,78 @@
-import React from 'react';
-import { Box, List, ListItem, ListItemText, Button, Typography, Divider } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, List, ListItem, ListItemText, Button, Typography, Divider, IconButton } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface ChatSidebarProps {
-  chats: { id: number, title: string }[];
+  chats: { id: number; title: string; lastMessage: string }[];
   onSelectChat: (id: number) => void;
   onNewChat: () => void;
+  onDeleteChat: (id: number) => void;
 }
 
-const ChatSidebar: React.FC<ChatSidebarProps> = ({ chats, onSelectChat, onNewChat }) => {
+const ChatSidebar: React.FC<ChatSidebarProps> = ({ chats, onSelectChat, onNewChat, onDeleteChat }) => {
+  const [isOpen, setIsOpen] = useState(true);
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <Box sx={{ width: '100%', height: '100vh', padding: '10px', backgroundColor: '#1d1d1d', color: '#fff' }}>
-      <Typography variant="h6" gutterBottom>
-        Chats
-      </Typography>
-      <Divider sx={{ marginBottom: '10px', borderColor: '#424242' }} />
-      <Button variant="contained" color="primary" onClick={onNewChat} fullWidth>
-        Nuevo Chat
-      </Button>
-      <Divider sx={{ marginY: '10px', borderColor: '#424242' }} />
-      <List>
-        {chats.map((chat) => (
-          <ListItem button key={chat.id} onClick={() => onSelectChat(chat.id)} sx={{ color: '#fff' }}>
-            <ListItemText primary={chat.title} />
-          </ListItem>
-        ))}
-      </List>
+    <Box
+      sx={{
+        width: isOpen ? '250px' : { xs: '0', md: '60px' },
+        height: '100vh',
+        backgroundColor: '#1d1d1d',
+        color: '#fff',
+        transition: 'width 0.3s',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        position: { xs: 'absolute', md: 'relative' },
+        zIndex: 1000,
+        overflow: 'hidden',
+      }}
+    >
+      <Box sx={{ display: 'flex', alignItems: 'center', padding: '10px' }}>
+        <IconButton onClick={toggleSidebar} sx={{ color: '#fff' }}>
+          {isOpen ? <CloseIcon /> : <MenuIcon />}
+        </IconButton>
+        {isOpen && (
+          <Typography variant="h6" sx={{ marginLeft: '10px' }}>
+            Chats
+          </Typography>
+        )}
+      </Box>
+      {isOpen && (
+        <>
+          <Divider sx={{ borderColor: '#424242' }} />
+          <Button variant="contained" sx={{ backgroundColor: '#4caf50', color: '#fff' }} onClick={onNewChat} fullWidth>
+            Nuevo Chat
+          </Button>
+          <Divider sx={{ borderColor: '#424242' }} />
+          <List sx={{ width: '100%' }}>
+            {chats.map((chat) => (
+              <ListItem key={chat.id} sx={{ color: '#fff' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                  <ListItemText 
+                    primary={chat.lastMessage || chat.title}
+                    onClick={() => onSelectChat(chat.id)}
+                    sx={{
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  />
+                  <IconButton onClick={() => onDeleteChat(chat.id)} sx={{ color: '#fff' }}>
+                    <DeleteIcon />
+                  </IconButton>
+                </Box>
+              </ListItem>
+            ))}
+          </List>
+        </>
+      )}
     </Box>
   );
 };
