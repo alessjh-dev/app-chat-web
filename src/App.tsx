@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, CssBaseline, ThemeProvider, useMediaQuery, IconButton, Typography } from '@mui/material';
+import { Box, CssBaseline, ThemeProvider, useMediaQuery, IconButton, Typography, Drawer } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChatSidebar from './ChatSidebar';
 import ChatWindow from './ChatWindow';
@@ -21,6 +21,7 @@ const App: React.FC = () => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<number | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  const [isHeaderOpen, setIsHeaderOpen] = useState<boolean>(true);
   const isMobile = useMediaQuery('(max-width:600px)');
 
   useEffect(() => {
@@ -82,22 +83,31 @@ const App: React.FC = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const toggleHeader = () => {
+    setIsHeaderOpen(!isHeaderOpen);
+  };
+
   const selectedChat = chats.find(chat => chat.id === selectedChatId) || null;
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
-        <Box
+        <Drawer
+          anchor="top"
+          open={isHeaderOpen}
+          onClose={toggleHeader}
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            padding: '0 16px',
-            backgroundColor: '#2c2c2c',
-            color: '#fff',
-            height: '64px',
-            zIndex: (theme) => theme.zIndex.drawer + 1,
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            '& .MuiDrawer-paper': {
+              height: '64px',
+              display: 'flex',
+              alignItems: 'center',
+              padding: '0 16px',
+              backgroundColor: '#2c2c2c',
+              color: '#fff',
+              zIndex: (theme) => theme.zIndex.drawer + 1,
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            },
           }}
         >
           <IconButton edge="start" color="inherit" onClick={toggleSidebar} aria-label="menu">
@@ -107,8 +117,8 @@ const App: React.FC = () => {
           <Typography variant="h6">
             GeminX
           </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', flex: 1 }}>
+        </Drawer>
+        <Box sx={{ display: 'flex', flex: 1, marginTop: '64px' }}>
           <ChatSidebar 
             chats={chats} 
             onSelectChat={handleSelectChat} 
