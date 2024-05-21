@@ -8,9 +8,9 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   return (
-    <AppBar position="static" sx={{ backgroundColor: '#2c2c2c' }}>
+    <AppBar position="static" sx={{ backgroundColor: '#2c2c2c', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar>
-        <IconButton edge="start" color="inherit" onClick={toggleSidebar}>
+        <IconButton edge="start" color="inherit" onClick={toggleSidebar} aria-label="menu">
           <MenuIcon />
         </IconButton>
         <Box sx={{ flexGrow: 1 }} />

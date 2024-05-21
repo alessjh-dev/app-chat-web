@@ -26,7 +26,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ chats, onSelectChat, onNewCha
       }}
     >
       <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ padding: '10px' }}>
+        <Box sx={{ padding: '10px', marginTop:'5rem' }}>
           <Typography variant="h6">
             Chats
           </Typography>

@@ -28,16 +28,15 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage }) => {
     if (input.trim() && chat) {
       const newMessage: Message = { text: input, user: 'me' };
       onSendMessage(newMessage);
+      setInput('');
 
       try {
-        const response = await axios.post('https://python-hello-world-beta-topaz.vercel.app/chat', { message: input });
+        const response = await axios.post('https://python-hello-world-beta-topaz.vercel.app/chat', { message: input.trim() });
         const botMessage: Message = { text: response.data.message, user: 'bot' };
         onSendMessage(botMessage);
       } catch (error) {
         console.error('Error sending message:', error);
       }
-
-      setInput('');
     }
   };
 
