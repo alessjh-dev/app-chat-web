@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, CssBaseline, ThemeProvider } from '@mui/material';
+import { Box, CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material';
 import ChatSidebar from './ChatSidebar';
 import ChatWindow from './ChatWindow';
 import Header from './Header';
@@ -20,7 +20,8 @@ interface Chat {
 const App: React.FC = () => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<number | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  const isMobile = useMediaQuery('(max-width:600px)');
 
   useEffect(() => {
     const storedChats = localStorage.getItem('chats');
@@ -50,6 +51,9 @@ const App: React.FC = () => {
 
   const handleSelectChat = (id: number) => {
     setSelectedChatId(id);
+    if (isMobile) {
+      setIsSidebarOpen(false);
+    }
   };
 
   const handleSendMessage = (message: Message) => {
@@ -92,6 +96,7 @@ const App: React.FC = () => {
             onNewChat={handleNewChat} 
             onDeleteChat={handleDeleteChat} 
             isOpen={isSidebarOpen} 
+            onClose={toggleSidebar}
           />
           <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)' }}>
             <ChatWindow chat={selectedChat} onSendMessage={handleSendMessage} />
