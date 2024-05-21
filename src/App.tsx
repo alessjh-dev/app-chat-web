@@ -15,6 +15,7 @@ const App: React.FC = () => {
   };
 
   const handleSelectChat = (id: number) => {
+    console.log(selectedChat)
     setSelectedChat(id);
   };
 
