@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, CssBaseline, ThemeProvider, useMediaQuery, AppBar, Toolbar, IconButton, Typography } from '@mui/material';
+import { Box, CssBaseline, ThemeProvider, useMediaQuery, AppBar, Toolbar, IconButton, Typography, Drawer } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChatSidebar from './ChatSidebar';
 import ChatWindow from './ChatWindow';
@@ -88,7 +88,7 @@ const App: React.FC = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
-        <AppBar position="static" sx={{ backgroundColor: '#2c2c2c' }}>
+        <AppBar position="fixed" sx={{ backgroundColor: '#2c2c2c' }}>
           <Toolbar>
             <IconButton edge="start" color="inherit" onClick={toggleSidebar} aria-label="menu">
               <MenuIcon />
@@ -99,7 +99,7 @@ const App: React.FC = () => {
             </Typography>
           </Toolbar>
         </AppBar>
-        <Box sx={{ display: 'flex', flex: 1 }}>
+        <Box sx={{ display: 'flex', flex: 1, marginTop: '64px' }}>
           <ChatSidebar 
             chats={chats} 
             onSelectChat={handleSelectChat} 
