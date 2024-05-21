@@ -23,7 +23,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ chats, onSelectChat, onNewCha
       sx={{
         width: isOpen ? '250px' : { xs: '0', md: '60px' },
         height: '100vh',
-        backgroundColor: '#1d1d1d',
+        backgroundColor: '#2c2c2c',
         color: '#fff',
         transition: 'width 0.3s',
         display: 'flex',
@@ -52,7 +52,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ chats, onSelectChat, onNewCha
           </Button>
           <Divider sx={{ borderColor: '#424242' }} />
           <List sx={{ width: '100%' }}>
-            {chats.map((chat) => (
+            {[...chats].reverse().map((chat) => (  // Reverse the order of chats
               <ListItem key={chat.id} sx={{ color: '#fff' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                   <ListItemText 

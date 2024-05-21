@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, KeyboardEvent, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { Box, TextField, Button, List, ListItem, Paper } from '@mui/material';
+import { Box, TextField, IconButton, List, ListItem, Paper, InputAdornment } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
 import MessageContent from './MessageContent';
 
 interface Message {
@@ -51,7 +52,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage }) => {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#121212', color: '#fff' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#1f1f1f', color: '#fff' }}>
       <Box sx={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column-reverse', padding: '10px' }}>
         <List>
           {chat?.messages.map((message, index) => (
@@ -72,19 +73,30 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ chat, onSendMessage }) => {
           <div ref={messagesEndRef} />
         </List>
       </Box>
-      <Box sx={{ display: 'flex', padding: '10px', borderTop: '1px solid #ccc', backgroundColor: '#1d1d1d' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', padding: '10px', backgroundColor: '#1f1f1f' }}>
         <TextField
           fullWidth
           value={input}
           onChange={handleChange}
           onKeyPress={handleKeyPress}
-          label="Escribe un mensaje"
+          placeholder="Escribe un mensaje..."
           variant="outlined"
-          sx={{ backgroundColor: '#333', borderRadius: '4px', input: { color: '#fff' } }}
+          sx={{ 
+            backgroundColor: '#333', 
+            borderRadius: '20px',
+            input: { color: '#fff' },
+            '& fieldset': { borderRadius: '20px', border: 'none' },
+          }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={handleSend} sx={{ color: '#fff', backgroundColor: '#555', borderRadius: '50%', padding: '5px' }}>
+                  <SendIcon sx={{ color: '#ccc' }} />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
-        <Button variant="contained" color="primary" onClick={handleSend} sx={{ marginLeft: '10px' }}>
-          Send
-        </Button>
       </Box>
     </Box>
   );
